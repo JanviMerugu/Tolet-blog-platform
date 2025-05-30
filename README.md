@@ -1,70 +1,47 @@
-# Getting Started with Create React App
+# 📝 ToLet Blog Platform (Frontend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern blog platform built using **React**, **CSS**, and **Bootstrap**, focused on content creation, browsing, and role-based access.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Features
 
-### `npm start`
+### ✅ Blog Listing
+- Displays all blogs in a clean card layout (3 per row).
+- Shows 6 blogs using pagination (3 per page).
+- Includes **Trending** and **Latest** filters.
+  - Trending → Blogs 1 to 6
+  - Latest → Blogs 4 to 9
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### ✅ Blog Details
+- Clicking on a blog opens a dedicated blog page.
+- Shows full blog content, image, author, date, and styling.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### ✅ Role-Based Access
+- **General User** and **Content Creator** roles selectable during login (radio buttons).
+- Only **Content Creators** can access the **"Add Blog"** page.
+- If a General User tries to access it, they see a Bootstrap modal warning.
 
-### `npm test`
+### ✅ Blog Creation
+- Content Creators can:
+  - Add blog title
+  - Enter blog content
+  - Upload an image
+  - Select a category (optional)
+- Neon-styled form with glowing UI (matches login page).
+- On submit, shows a Bootstrap popup: “Details Submitted”.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### ✅ Authentication Simulation
+- Role is saved using `localStorage`.
+- No real backend or database — frontend logic only.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠 Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Frontend | UI/UX         | Routing        | Icons     |
+|----------|---------------|----------------|-----------|
+| React    | Bootstrap 5   | React Router   | react-icons |
+| CSS3     | Neon Effects  | LocalStorage   | FontAwesome (via icons) |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
