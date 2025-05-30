@@ -20,7 +20,7 @@ const CreateBlog = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    navigate('/register'); // 🔄 Redirect to Register instead of Login
+    navigate('/login'); // Redirect to login
   };
 
   const handleSubmit = (e) => {
@@ -31,6 +31,7 @@ const CreateBlog = () => {
 
   return (
     <div className="auth-container">
+      {/* ✅ Creator can see form */}
       {isCreator && (
         <div className="auth-box neon-border teal-gold wide-auth-box">
           <h3 className="text-center mb-4">Create Blog</h3>
@@ -60,7 +61,7 @@ const CreateBlog = () => {
         </div>
       )}
 
-      {/* 🔒 Access Denied Modal */}
+      {/* ❌ Access denied for general users */}
       {showModal && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -69,11 +70,11 @@ const CreateBlog = () => {
                 <h5 className="modal-title">Access Denied</h5>
               </div>
               <div className="modal-body">
-                <p>To add a blog, you must be registered as a content creator.</p>
+                <p>Only users registered as <strong>content creators</strong> can create a blog.</p>
               </div>
               <div className="modal-footer border-0">
                 <button className="btn btn-warning" onClick={handleCloseModal}>
-                  Go to Register
+                  Go to Login
                 </button>
               </div>
             </div>

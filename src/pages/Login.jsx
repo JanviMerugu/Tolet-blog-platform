@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import '../styles/main.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [role, setRole] = useState('general');
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -15,8 +16,8 @@ const Login = () => {
       return;
     }
 
-    // Optional: Clear any existing role (or set default role if needed)
-    localStorage.removeItem('role');
+    // ✅ Save role in localStorage
+    localStorage.setItem('role', role);
 
     // ✅ Redirect to blog page
     navigate('/blog');
@@ -39,7 +40,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="form-group mb-4 input-icon">
+          <div className="form-group mb-3 input-icon">
             <label>Password</label>
             <FaLock className="icon" />
             <input
@@ -50,6 +51,35 @@ const Login = () => {
               required
               minLength="6"
             />
+          </div>
+
+          {/* ✅ Radio buttons for role selection */}
+          <div className="form-group mb-4">
+            <label>Select Role</label><br />
+            <div style={{ color: '#ccc', marginTop: '5px' }}>
+              <label style={{ marginRight: '20px' }}>
+                <input
+                  type="radio"
+                  name="role"
+                  value="general"
+                  checked={role === 'general'}
+                  onChange={() => setRole('general')}
+                  style={{ marginRight: '6px' }}
+                />
+                General User
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="creator"
+                  checked={role === 'creator'}
+                  onChange={() => setRole('creator')}
+                  style={{ marginRight: '6px' }}
+                />
+                Content Creator
+              </label>
+            </div>
           </div>
 
           <button type="submit" className="neon-button">LOGIN</button>
