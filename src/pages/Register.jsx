@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/main.css';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [role, setRole] = useState('general');
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -14,8 +15,11 @@ const Register = () => {
       return;
     }
 
-    // ✅ Valid password - proceed to login
-    navigate('/login');
+    // ✅ Save role to localStorage
+    localStorage.setItem('role', role);
+
+    alert('✅ Registered successfully as ' + role + '! Redirecting to login...');
+    navigate('/login'); // ✅ Redirect to login
   };
 
   return (
@@ -46,10 +50,40 @@ const Register = () => {
               minLength="6"
             />
           </div>
-          <div className="form-group mb-4">
+          <div className="form-group mb-3">
             <label>Phone Number</label>
             <input type="text" className="form-control neon-input" required />
           </div>
+
+          {/* ✅ Role Selection Radio Buttons */}
+          <div className="form-group mb-4">
+            <label>Select Role</label><br />
+            <div style={{ color: '#ccc', marginTop: '5px' }}>
+              <label style={{ marginRight: '20px' }}>
+                <input
+                  type="radio"
+                  name="role"
+                  value="general"
+                  checked={role === 'general'}
+                  onChange={() => setRole('general')}
+                  style={{ marginRight: '6px' }}
+                />
+                General User
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="creator"
+                  checked={role === 'creator'}
+                  onChange={() => setRole('creator')}
+                  style={{ marginRight: '6px' }}
+                />
+                Content Creator
+              </label>
+            </div>
+          </div>
+
           <button type="submit" className="neon-button">REGISTER</button>
         </form>
       </div>
