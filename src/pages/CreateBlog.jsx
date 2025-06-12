@@ -1,86 +1,101 @@
 // src/pages/CreateBlog.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../styles/main.css';
-import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, Button } from 'react-bootstrap';
 
 const CreateBlog = () => {
-  const [isCreator, setIsCreator] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState('');
 
-  useEffect(() => {
-    const role = localStorage.getItem('role');
-    if (role === 'creator') {
-      setIsCreator(true);
-    } else {
-      setShowModal(true);
-    }
-  }, []);
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    navigate('/login'); // Redirect to login
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('✅ Blog submitted successfully!');
-    e.target.reset();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setErrorMsg('You must be logged in.');
+      return;
+    }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.role !== 'creator') {
+      setErrorMsg('Access denied: Only creators can create blogs.');
+      return;
+    }
+
+    const formData = new FormData(e.target);
+
+    try {
+      const response = await fetch('https://blogbackend-lghb.onrender.com/api/blogs', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrorMsg(data.msg || 'Blog creation failed.');
+        return;
+      }
+
+      setShowModal(true);
+      setErrorMsg('');
+      e.target.reset();
+    } catch {
+      setErrorMsg('Something went wrong. Try again.');
+    }
   };
+
+  const handleClose = () => setShowModal(false);
 
   return (
     <div className="auth-container">
-      {/* ✅ Creator can see form */}
-      {isCreator && (
-        <div className="auth-box neon-border teal-gold wide-auth-box">
-          <h3 className="text-center mb-4">Create Blog</h3>
-          <form onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
+      <div className="auth-box wide-auth-box neon-border teal-gold">
+        <h3 className="text-center text-white mb-4">Create Blog</h3>
+        {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="col-md-6 mb-3">
               <label>Title</label>
-              <input type="text" className="form-control neon-input" required />
+              <input type="text" name="title" className="form-control neon-input" required />
             </div>
-            <div className="form-group mb-3">
+            <div className="col-md-6 mb-3">
               <label>Category</label>
-              <input type="text" className="form-control neon-input" required />
+              <input type="text" name="category" className="form-control neon-input" required />
             </div>
-            <div className="form-group mb-3">
-              <label>Intro</label>
-              <input type="text" className="form-control neon-input" required />
+            <div className="col-md-12 mb-3">
+              <label>Tags (comma separated)</label>
+              <input type="text" name="tags" className="form-control neon-input" />
             </div>
-            <div className="form-group mb-3">
+            <div className="col-md-12 mb-3">
               <label>Upload Image</label>
-              <input type="file" className="form-control neon-input" accept="image/*" required />
+              <input type="file" name="image" className="form-control neon-input" required />
             </div>
-            <div className="form-group mb-4">
+            <div className="col-md-12 mb-4">
               <label>Content</label>
-              <textarea rows="5" className="form-control neon-input" required></textarea>
-            </div>
-            <button type="submit" className="neon-button">Submit</button>
-          </form>
-        </div>
-      )}
-
-      {/* ❌ Access denied for general users */}
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content bg-dark text-white">
-              <div className="modal-header border-0">
-                <h5 className="modal-title">Access Denied</h5>
-              </div>
-              <div className="modal-body">
-                <p>Only users registered as <strong>content creators</strong> can create a blog.</p>
-              </div>
-              <div className="modal-footer border-0">
-                <button className="btn btn-warning" onClick={handleCloseModal}>
-                  Go to Login
-                </button>
-              </div>
+              <textarea name="content" rows="5" className="form-control neon-input" required></textarea>
             </div>
           </div>
-        </div>
-      )}
+          <div className="d-flex justify-content-between">
+            <button type="submit" className="neon-button">Submit</button>
+            <button type="reset" className="neon-button">Reset</button>
+          </div>
+        </form>
+      </div>
+
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Submission Successful</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Your blog has been submitted successfully!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

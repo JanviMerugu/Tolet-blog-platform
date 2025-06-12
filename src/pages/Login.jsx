@@ -2,25 +2,40 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import '../styles/main.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState('general');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    const email = e.target.email.value;
     const password = e.target.password.value;
 
     if (password.length < 6) {
       alert('Password must be at least 6 characters.');
+      setLoading(false);
       return;
     }
 
-    // ✅ Save role in localStorage
-    localStorage.setItem('role', role);
-
-    // ✅ Redirect to blog page
-    navigate('/blog');
+    try {
+      const res = await axios.post('https://blogbackend-lghb.onrender.com/api/auth/login', { email, password });
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        alert('Login successful!');
+        navigate('/');
+      } else {
+        alert('Login failed. Please try again.');
+      }
+    } catch (err) {
+      alert(err?.response?.data?.msg || 'Server error during login.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,62 +46,19 @@ const Login = () => {
           <div className="form-group mb-3 input-icon">
             <label>Email</label>
             <FaEnvelope className="icon" />
-            <input
-              type="email"
-              placeholder="Email"
-              className="form-control neon-input"
-              name="email"
-              required
-            />
+            <input type="email" name="email" className="form-control neon-input" required />
           </div>
-
-          <div className="form-group mb-3 input-icon">
+          <div className="form-group mb-4 input-icon">
             <label>Password</label>
             <FaLock className="icon" />
-            <input
-              type="password"
-              placeholder="Password"
-              className="form-control neon-input"
-              name="password"
-              required
-              minLength="6"
-            />
+            <input type="password" name="password" className="form-control neon-input" required minLength="6" />
           </div>
-
-          {/* ✅ Radio buttons for role selection */}
-          <div className="form-group mb-4">
-            <label>Select Role</label><br />
-            <div style={{ color: '#ccc', marginTop: '5px' }}>
-              <label style={{ marginRight: '20px' }}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="general"
-                  checked={role === 'general'}
-                  onChange={() => setRole('general')}
-                  style={{ marginRight: '6px' }}
-                />
-                General User
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="role"
-                  value="creator"
-                  checked={role === 'creator'}
-                  onChange={() => setRole('creator')}
-                  style={{ marginRight: '6px' }}
-                />
-                Content Creator
-              </label>
-            </div>
-          </div>
-
-          <button type="submit" className="neon-button">LOGIN</button>
+          <button type="submit" className="neon-button" disabled={loading}>
+            {loading ? 'Logging in...' : 'LOGIN'}
+          </button>
         </form>
-
         <div className="text-center mt-3 small-links">
-          <a href="/forgot-password">Forgot Password ?</a> | <a href="/register">Register</a>
+          <Link to="/forgot-password">Forgot Password ?</Link> | <Link to="/register">Register</Link>
         </div>
       </div>
     </div>

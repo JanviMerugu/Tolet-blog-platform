@@ -72,16 +72,14 @@ const allBlogs = [
 const BlogList = () => {
   const [activeTab, setActiveTab] = useState('trending');
   const [currentPage, setCurrentPage] = useState(1);
-
   const blogsPerPage = 3;
 
   const filteredBlogs =
     activeTab === 'trending'
       ? allBlogs.slice(0, 9)
-      : allBlogs.slice(3, 9); // blogs 4–9 for "latest"
+      : allBlogs.slice(3, 9);
 
   const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
-
   const startIndex = (currentPage - 1) * blogsPerPage;
   const displayedBlogs = filteredBlogs.slice(startIndex, startIndex + blogsPerPage);
 
@@ -90,13 +88,20 @@ const BlogList = () => {
     setCurrentPage(1);
   };
 
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
   return (
     <div className="blog-page container py-5 text-white">
       <h2 className="text-center mb-2">Rental Tips & Blog</h2>
-      <p className="text-center mb-4" style={{ color: 'white' }}>
-        Helpful articles for landlords and tenants
-      </p>
+      <p className="text-center mb-4">Helpful articles for landlords and tenants</p>
 
+      {/* Tabs */}
       <div className="d-flex justify-content-center mb-4">
         <button
           className={`btn btn-sm mx-2 ${activeTab === 'trending' ? 'btn-info text-dark' : 'btn-outline-info'}`}
@@ -105,13 +110,14 @@ const BlogList = () => {
           Trending
         </button>
         <button
-          className={`btn btn-sm ${activeTab === 'latest' ? 'btn-info text-dark' : 'btn-outline-info'}`}
+          className={`btn btn-sm mx-2 ${activeTab === 'latest' ? 'btn-info text-dark' : 'btn-outline-info'}`}
           onClick={() => handleTab('latest')}
         >
           Latest
         </button>
       </div>
 
+      {/* Blog Grid */}
       <div className="row">
         {displayedBlogs.map((blog) => (
           <div className="col-md-4 mb-4" key={blog.id}>
@@ -121,7 +127,7 @@ const BlogList = () => {
                 <p className="text-info mb-1">{blog.date}</p>
                 <h5 className="card-title">{blog.title}</h5>
                 <p className="card-text">{blog.excerpt}</p>
-                <Link to={`/blog/${blog.id}`} className="text-info fw-bold">
+                <Link to={`/blog/${blog.id}`} state={{ blog }} className="text-info fw-bold">
                   Read More →
                 </Link>
               </div>
@@ -130,16 +136,22 @@ const BlogList = () => {
         ))}
       </div>
 
-      <div className="d-flex justify-content-center mt-3">
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index}
-            className={`btn btn-sm mx-1 ${currentPage === index + 1 ? 'btn-info text-dark' : 'btn-outline-info'}`}
-            onClick={() => setCurrentPage(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
+      {/* Pagination */}
+      <div className="d-flex justify-content-center mt-4">
+        <button
+          className="btn btn-outline-info mx-2"
+          onClick={handlePrev}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          className="btn btn-outline-info mx-2"
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
